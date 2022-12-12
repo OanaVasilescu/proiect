@@ -1,0 +1,6 @@
+<mvc:View controllerName="riskapp.controller.Overview"
+    xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
+    xmlns:f="sap.f"
+    xmlns="sap.m">
+    <Button text="Coming Soon"></Button>
+</mvc:View>
