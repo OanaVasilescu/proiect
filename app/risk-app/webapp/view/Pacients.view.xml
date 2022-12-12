@@ -1,0 +1,5 @@
+<mvc:View controllerName="riskapp.controller.Pacients"
+    xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
+    xmlns:f="sap.f"
+    xmlns="sap.m">
+</mvc:View>

@@ -1,6 +1,41 @@
 <mvc:View controllerName="riskapp.controller.Overview"
     xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
-    xmlns:f="sap.f"
-    xmlns="sap.m">
-    <Button text="Coming Soon"></Button>
+    xmlns="sap.m"
+    xmlns:tnt="sap.tnt"
+    xmlns:core="sap.ui.core">
+    <tnt:ToolPage id="toolPage">
+        <tnt:header>
+            <tnt:ToolHeader design="Solid">
+                <Title level="H1" text="EESSP">
+                </Title>
+                <ToolbarSpacer>
+                    <layoutData>
+                        <OverflowToolbarLayoutData minWidth="20px" />
+                    </layoutData>
+                </ToolbarSpacer>
+            </tnt:ToolHeader>
+        </tnt:header>
+        <tnt:subHeader>
+            <tnt:ToolHeader>
+                <IconTabHeader selectedKey="appointments" select=".onItemSelect" mode="Inline">
+                    <items>
+                        <IconTabFilter text="Programari" key="appointments">
+                        </IconTabFilter>
+                        <IconTabFilter text="Pacienti" key="pacients">
+                        </IconTabFilter>
+                    </items>
+                </IconTabHeader>
+                <!-- <Button text="{i18n>filters}" icon="sap-icon://add-filter"></Button>
+                <Button text="{i18n>uploadRiskEvent}" type="Emphasized" icon="sap-icon://add-document" press="onOpenDialog"></Button> -->
+            </tnt:ToolHeader>
+        </tnt:subHeader>
+        <tnt:mainContents>
+            <NavContainer id="pageContainer" initialPage="appointments">
+                <pages>
+                    <mvc:XMLView id="appointments" viewName="riskapp.view.Appointments"></mvc:XMLView>
+                    <mvc:XMLView id="pacients" viewName="riskapp.view.Pacients"></mvc:XMLView>
+                </pages>
+            </NavContainer>
+        </tnt:mainContents>
+    </tnt:ToolPage>
 </mvc:View>
