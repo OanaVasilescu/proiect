@@ -19,9 +19,9 @@
             <tnt:ToolHeader>
                 <IconTabHeader selectedKey="appointments" select=".onItemSelect" mode="Inline">
                     <items>
-                        <IconTabFilter text="Programari" key="appointments">
+                        <IconTabFilter text="Appointments" key="appointments">
                         </IconTabFilter>
-                        <IconTabFilter text="Pacienti" key="pacients">
+                        <IconTabFilter text="Pacients" key="pacients">
                         </IconTabFilter>
                     </items>
                 </IconTabHeader>

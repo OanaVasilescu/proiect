@@ -4,6 +4,14 @@ using {
     cuid
 } from '@sap/cds/common';
 
+entity Programare: cuid{
+    titlu: String;
+    descriere: String;
+    startDate: String;
+    endDate: String;
+    pacient: Association to one Pacient;
+}
+
 entity Pacient : cuid {
     nume: String; 
     prenume: String;

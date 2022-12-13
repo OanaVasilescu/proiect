@@ -4,9 +4,8 @@ sap.ui.define([
     "sap/ui/model/json/JSONModel",
     "riskapp/utils/URLs",
     "sap/m/MessageToast",
-    "riskapp/utils/Colors",
 
-], function (Controller, AjaxClient, JSONModel, URLs, MessageToast, Colors) {
+], function (Controller, AjaxClient, JSONModel, URLs, MessageToast) {
     "use strict";
     return Controller.extend("riskapp.controller.BaseController", {
         getRouter: function () {
@@ -39,41 +38,6 @@ sap.ui.define([
 
         getInitials: function (name) {
             return name.match(/(\b\S)?/g).join("").match(/(^\S|\S$)?/g).join("").toUpperCase();
-        },
-
-        getColor: function (eventData) {
-            switch (eventData.status_code + eventData.impact_code) {
-                case '0101':
-                    return Colors.getActiveRegional()
-
-                case '0102':
-                    return Colors.getActiveIsolated()
-
-                case '0103':
-                    return Colors.getActiveNonCritical()
-
-                case '0201':
-                    return Colors.getEmergingRegional()
-
-                case '0202':
-                    return Colors.getEmergingIsolated()
-
-                case '0203':
-                    return Colors.getEmergingNonCritical()
-
-                case '0301':
-                    return Colors.getPossibleRegional()
-
-                case '0302':
-                    return Colors.getPossibleIsolated()
-
-                case '0303':
-                    return Colors.getPossibleNonCritical()
-
-                default:
-                    break;
-            }
-            return;
         },
 
         createUrl: function (url) { // return this.getOwnerComponent().getManifestObject().resolveUri(url);
