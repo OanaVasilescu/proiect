@@ -16,8 +16,8 @@
                 <Label text="Additional information" labelFor="inputInfo"/>
                 <Input id="moreInfo" maxLength="255"/>
                 <Label text="Pacient" labelFor="pacient"/>
-                <Select forceSelection="false" visible="{visibilityModel>/pacients}" items="{Pacients>/}">
-                    <core:Item key="{Pacients>ID}" text="{Pacients>nume}" />
+                <Select id="pacientSelect" forceSelection="false" visible="{visibilityModel>/pacients}" items="{Pacients>/}">
+                    <core:Item key="{Pacients>ID}" text="{Pacients>nume} {Pacients>prenume}" />
                 </Select>
                 <Label text="From" labelFor="startDate"/>
                 <DateTimePicker id="DTPStartDate" required="true" visible="{= !${allDay>/allDay}}" change="handleDateTimePickerChange"/>
@@ -25,7 +25,7 @@
                 <Label text="To" labelFor="endDate"/>
                 <DateTimePicker id="DTPEndDate" required="true" visible="{= !${allDay>/allDay}}" change="handleDateTimePickerChange"/>
                 <DatePicker id="DPEndDate" required="true" visible="{= ${allDay>/allDay}}" change="handleDatePickerChange"/>
-                <CheckBox id="allDay" text="All-day" selected="{allDay>/allDay}" select="handleCheckBoxSelect"/>
+                <CheckBox id="allDay" text="All-day" selected="{allDay>/allDay}" visible="{visibilityModel>/allDay}" select="handleCheckBoxSelect"/>
                 <Label text="Type" labelFor="appType"/>
                 <Select id="appType" change="getPacientSelectVisible" items="{supportedAppointmentItems>/supportedAppointmentItems}">
                     <core:Item key="{supportedAppointmentItems>type}" text="{supportedAppointmentItems>text}" />

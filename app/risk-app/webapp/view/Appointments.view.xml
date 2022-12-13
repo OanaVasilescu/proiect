@@ -24,7 +24,7 @@
                 <SinglePlanningCalendarMonthView key="MonthView" title="Month" />
             </views>
             <appointments>
-                <unified:CalendarAppointment title= "{title}" text= "{text}" type= "{type}" icon= "{icon}" startDate= "{startDate}" endDate= "{endDate}">
+                <unified:CalendarAppointment title= "{title} {pacient_ID} {pacient/prenume}" text= "{text}" type= "{type}" icon= "{icon}" startDate= "{startDate}" endDate= "{endDate}">
                 </unified:CalendarAppointment>
             </appointments>
         </SinglePlanningCalendar>

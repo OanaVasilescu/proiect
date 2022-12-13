@@ -5,11 +5,12 @@ using {
 } from '@sap/cds/common';
 
 entity Programare: cuid{
-    titlu: String;
-    descriere: String;
-    startDate: String;
-    endDate: String;
+    title: String;
+    text: String;
+    startDate: DateTime;
+    endDate: DateTime;
     pacient: Association to one Pacient;
+    type: String;
 }
 
 entity Pacient : cuid {

@@ -52,7 +52,7 @@ sap.ui.define([
             oModel.setData({supportedAppointmentItems: supportedAppointmentItems});
             this.getView().setModel(oModel, "supportedAppointmentItems");
 
-            this.getView().setModel(new JSONModel(), "visibilityModel");
+            this.getView().setModel(new JSONModel({allDay: false}), "visibilityModel");
         },
 
         initPage: async function () {
@@ -150,7 +150,7 @@ sap.ui.define([
         },
 
 
-        handleAppointmentCreateDnD: function (oEvent) {
+        handleAppointmentCreateDnD: async function (oEvent) {
             var oStartDate = oEvent.getParameter("startDate"),
                 oEndDate = oEvent.getParameter("endDate"),
                 sAppointmentTitle = "New Appointment",
@@ -161,10 +161,34 @@ sap.ui.define([
                     endDate: oEndDate
                 };
 
-            oModel.getData().push(oNewAppointment);
-            oModel.updateBindings();
+            await this.post("/app/Programare", oNewAppointment).then(async (data) => {
+                this.getAppointments()
+                this.messageHandler("Appointment with title \n'" + sAppointmentTitle + "'\n has been created");
+            }).catch((err) => {
+                this.messageHandler("uploadRiskEventError");
+                return "error";
+            });
+        },
 
-            this.messageHandler("Appointment with title \n'" + sAppointmentTitle + "'\n has been created");
+        handleOpenLegend: function (oEvent) {
+            debugger;
+            var oSource = oEvent.getSource(),
+                oView = this.getView();
+
+            if (!this._pLegendPopover) {
+                this._pLegendPopover = Fragment.load({id: oView.getId(), name: "riskapp.view.fragments.Legend", controller: this}).then(function (oLegendPopover) {
+                    oView.addDependent(oLegendPopover);
+                    return oLegendPopover;
+                });
+            }
+
+            this._pLegendPopover.then(function (oLegendPopover) {
+                if (oLegendPopover.isOpen()) {
+                    oLegendPopover.close();
+                } else {
+                    oLegendPopover.openBy(oSource);
+                }
+            });
         },
 
         handleViewChange: function () {
@@ -395,7 +419,7 @@ sap.ui.define([
         },
 
 
-        handleDialogOkButton: function () {
+        handleDialogOkButton: async function () {
             var bAllDayAppointment = (this.byId("allDay")).getSelected(),
                 sStartDate = bAllDayAppointment ? "DPStartDate" : "DTPStartDate",
                 sEndDate = bAllDayAppointment ? "DPEndDate" : "DTPEndDate",
@@ -404,6 +428,7 @@ sap.ui.define([
                 sType = this.byId("appType").getSelectedItem().getKey(),
                 oStartDate = this.byId(sStartDate).getDateValue(),
                 oEndDate = this.byId(sEndDate).getDateValue(),
+                pacient_ID = this.byId("pacientSelect").getSelectedItem().getKey(),
                 oModel = this.getView().getModel(),
                 sAppointmentPath;
 
@@ -416,15 +441,41 @@ sap.ui.define([
                     oModel.setProperty(sAppointmentPath + "/type", sType);
                     oModel.setProperty(sAppointmentPath + "/startDate", oStartDate);
                     oModel.setProperty(sAppointmentPath + "/endDate", oEndDate);
+                    oModel.setProperty(sAppointmentPath + "/pacient_ID", pacient_ID);
+
+                    debugger;
+                    await this.put("/app/Programare/" + oModel.getProperty(sAppointmentPath + "/ID"), oModel.getProperty(sAppointmentPath)).then(async (data) => {}).catch((err) => {
+                        this.messageHandler("uploadRiskEventError");
+                        return "error";
+                    });
                 } else {
-                    oModel.getData().appointments.push({
+                    let appt = oModel.getData().appointments.push({
                         title: sTitle,
                         text: sText,
                         type: sType,
                         startDate: oStartDate,
-                        endDate: oEndDate
+                        endDate: oEndDate,
+                        pacient_ID: pacient_ID
                     });
-                } oModel.updateBindings();
+
+                    await this.post("/app/Programare", appt).then(async (data) => {
+                        oModel.getData().appointments.push({
+                            title: sTitle,
+                            text: sText,
+                            type: sType,
+                            startDate: oStartDate,
+                            endDate: oEndDate,
+                            pacient_ID: pacient_ID
+                        });
+
+                        // this.messageHandler("Appointment with title \n'" + sAppointmentTitle + "'\n has been created");
+                    }).catch((err) => {
+                        this.messageHandler("uploadRiskEventError");
+                        return "error";
+                    });
+                }
+
+                this.getAppointments();
 
                 this.byId("modifyDialog").close();
             }
@@ -434,14 +485,25 @@ sap.ui.define([
             let selection = this.getView().byId("appType").getSelectedItem().getKey()
             if (selection == 'Type05' || selection == 'Type01') {
                 this.getView().getModel("visibilityModel").setProperty('/pacients', true);
-                return;
+            } else {
+                this.getView().getModel("visibilityModel").setProperty('/pacients', false);
             }
-            this.getView().getModel("visibilityModel").setProperty('/pacients', false);
+
+            if (selection == 'Type14' || selection == 'Type01' || selection == 'Type05') {
+                this.getView().getModel("visibilityModel").setProperty('/allDay', false);
+            } else {
+                this.getView().getModel("visibilityModel").setProperty('/allDay', true);
+            }
         },
 
         getAppointments: async function () {
             await this.get(URLs.getAppointmentsUrl()).then(async (data) => {
-                await this.getView().getModel().setData(data.value);
+                let dt = data.value.map(element => ({
+                    ...element,
+                    startDate: new Date(element.startDate),
+                    endDate: new Date(element.endDate)
+                }));
+                await this.getView().getModel().setData(dt);
             }).catch((err) => {
                 console.log(err);
                 this.messageHandler("Get appointment error");

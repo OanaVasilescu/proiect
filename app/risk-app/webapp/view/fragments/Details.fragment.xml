@@ -22,6 +22,8 @@
 						formatter:'.formatDate'
 					}"/>
             <CheckBox id="allDayText" text="All-day" selected="{allDay>/allDay}" enabled="false"/>
+            <Label text="Pacient" labelFor="Pacient"/>
+            <Text id="Pacient" text="{pacient/nume} {pacient/prenume}"/>
             <Label text="Type" labelFor="appType"/>
             <Text id="appTypeText" text="{ path: 'type', formatter: '._typeFormatter'}"/>
         </f:SimpleForm>
