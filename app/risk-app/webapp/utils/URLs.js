@@ -3,7 +3,7 @@ sap.ui.define([], function () {
     const origin = "/app";
     const slash = "/";
     const Programare = "/Programare?&$expand=pacient";
-    const pacients = "/Pacients?&$expand=fise";
+    const pacients = "/Pacient?&$expand=fise";
 
     return {
         getAppointmentsUrl: function () {
