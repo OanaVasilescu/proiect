@@ -119,7 +119,7 @@ sap.ui.define([
             this.updateButtonEnabledState(oDatePickerStart, oDatePickerEnd, this.byId("modifyDialog").getBeginButton());
         },
 
-        handleAppointmentDrop: function (oEvent) {
+        handleAppointmentDrop: async function (oEvent) {
             var oAppointment = oEvent.getParameter("appointment"),
                 oStartDate = oEvent.getParameter("startDate"),
                 oEndDate = oEvent.getParameter("endDate"),
@@ -137,8 +137,16 @@ sap.ui.define([
                     startDate: oStartDate,
                     endDate: oEndDate
                 };
-                oModel.getData().push(oNewAppointment);
-                oModel.updateBindings();
+
+                // oModel.getData().push(oNewAppointment);
+                // oModel.updateBindings();
+                await this.post("/app/Programare", oNewAppointment).then(async (data) => {
+                    this.getAppointments()
+                    this.messageHandler("Appointment with title \n'" + sAppointmentTitle + "'\n has been created");
+                }).catch((err) => {
+                    this.messageHandler("uploadRiskEventError");
+                    return "error";
+                });
             } else {
                 oAppointment.setStartDate(oStartDate);
                 oAppointment.setEndDate(oEndDate);
@@ -154,7 +162,6 @@ sap.ui.define([
             var oStartDate = oEvent.getParameter("startDate"),
                 oEndDate = oEvent.getParameter("endDate"),
                 sAppointmentTitle = "New Appointment",
-                oModel = this.getView().getModel(),
                 oNewAppointment = {
                     title: sAppointmentTitle,
                     startDate: oStartDate,
@@ -395,7 +402,7 @@ sap.ui.define([
         },
 
 
-        handlePopoverDeleteButton: function () {
+        handlePopoverDeleteButton: async function () {
             var oModel = this.getView().getModel(),
                 oAppointments = oModel.getData(),
                 oDetailsPopover = this.byId("detailsPopover"),
@@ -403,8 +410,12 @@ sap.ui.define([
 
             oDetailsPopover.close();
 
-            oAppointments.splice(oAppointments.indexOf(oAppointment), 1);
-            oModel.updateBindings();
+            await this.delete("/app/Programare/" + oAppointment.ID).then(async (data) => {
+                this.getAppointments()
+            }).catch((err) => {
+                this.messageHandler("error");
+                return "error";
+            })
         },
 
         updateButtonEnabledState: function (oDateTimePickerStart, oDateTimePickerEnd, oButton) {
@@ -443,7 +454,7 @@ sap.ui.define([
                     oModel.setProperty(sAppointmentPath + "/endDate", oEndDate);
                     oModel.setProperty(sAppointmentPath + "/pacient_ID", pacient_ID);
 
-                    debugger;
+                    this.prepareAppointment(oModel.getProperty(sAppointmentPath));
                     await this.put("/app/Programare/" + oModel.getProperty(sAppointmentPath + "/ID"), oModel.getProperty(sAppointmentPath)).then(async (data) => {}).catch((err) => {
                         this.messageHandler("uploadRiskEventError");
                         return "error";
@@ -494,6 +505,16 @@ sap.ui.define([
             } else {
                 this.getView().getModel("visibilityModel").setProperty('/allDay', true);
             }
+        },
+
+        goToPacient: function (event) {
+            let path = event.getSource().getBindingContext().sPath
+            let model = this.getView().getModel().getProperty(path)
+            debugger;
+        },
+
+        prepareAppointment: function (model) {
+            delete model.pacient;
         },
 
         getAppointments: async function () {
