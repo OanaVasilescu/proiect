@@ -157,6 +157,26 @@ sap.ui.define([
         ));
         },
 
+        handleAppointmentResize: async function (oEvent) {
+            var oAppointment = oEvent.getParameter("appointment"),
+                oStartDate = oEvent.getParameter("startDate"),
+                oEndDate = oEvent.getParameter("endDate"),
+                sAppointmentTitle = oAppointment.getTitle();
+
+            oAppointment.setStartDate(oStartDate);
+            oAppointment.setEndDate(oEndDate);
+
+            this.prepareAppointment(oAppointment);
+            await this.put("/app/Programare/" + oAppointment.ID, oAppointment).then(async (data) => {
+                this.messageHandler("Appointment with title \n'" + sAppointmentTitle + "'\n has been resized");
+                this.getAppointments();
+            }).catch((err) => {
+                this.messageHandler("error");
+                return "error";
+            });
+
+        },
+
 
         handleAppointmentCreateDnD: async function (oEvent) {
             var oStartDate = oEvent.getParameter("startDate"),
@@ -178,7 +198,6 @@ sap.ui.define([
         },
 
         handleOpenLegend: function (oEvent) {
-            debugger;
             var oSource = oEvent.getSource(),
                 oView = this.getView();
 
@@ -198,8 +217,7 @@ sap.ui.define([
             });
         },
 
-        handleViewChange: function () {
-            this.messageHandler("'viewChange' event fired.");
+        handleViewChange: function () { // this.messageHandler("'viewChange' event fired.");
         },
 
         handleAppointmentSelect: function (oEvent) {
@@ -270,6 +288,27 @@ sap.ui.define([
             this.getView().getModel().setData({
                 startDate: oDate
             }, true);
+        },
+
+        handleCheckBoxSelect: function (oEvent) {
+            var bSelected = oEvent.getSource().getSelected(),
+                sStartDatePickerID = bSelected ? "DTPStartDate" : "DPStartDate",
+                sEndDatePickerID = bSelected ? "DTPEndDate" : "DPEndDate",
+                oOldStartDate = this.byId(sStartDatePickerID).getDateValue(),
+                oNewStartDate = new Date(oOldStartDate),
+                oOldEndDate = this.byId(sEndDatePickerID).getDateValue(),
+                oNewEndDate = new Date(oOldEndDate);
+
+            if (! bSelected) {
+                oNewStartDate.setHours(this._getDefaultAppointmentStartHour());
+                oNewEndDate.setHours(this._getDefaultAppointmentEndHour());
+            } else {
+                this._setHoursToZero(oNewStartDate);
+                this._setHoursToZero(oNewEndDate);
+            } sStartDatePickerID = ! bSelected ? "DTPStartDate" : "DPStartDate";
+            sEndDatePickerID = ! bSelected ? "DTPEndDate" : "DPEndDate";
+            this.byId(sStartDatePickerID).setDateValue(oNewStartDate);
+            this.byId(sEndDatePickerID).setDateValue(oNewEndDate);
         },
 
         _getDefaultAppointmentStartHour: function () {
@@ -426,6 +465,7 @@ sap.ui.define([
 
         handleDialogCancelButton: function () {
             this.sPath = null;
+            this.byId("pacientSelect").setSelectedItem(null)
             this.byId("modifyDialog").close();
         },
 
@@ -439,9 +479,16 @@ sap.ui.define([
                 sType = this.byId("appType").getSelectedItem().getKey(),
                 oStartDate = this.byId(sStartDate).getDateValue(),
                 oEndDate = this.byId(sEndDate).getDateValue(),
-                pacient_ID = this.byId("pacientSelect").getSelectedItem().getKey(),
+                pacientSelected = this.byId("pacientSelect").getSelectedItem(),
                 oModel = this.getView().getModel(),
                 sAppointmentPath;
+            let pacient_ID
+
+            if (pacientSelected && (sType == CalendarDayType.Type01 || sType == CalendarDayType.Type05)) {
+                pacient_ID = pacientSelected.getKey()
+            } else {
+                pacient_ID = null;
+            }
 
             if (this.byId(sStartDate).getValueState() !== ValueState.Error && this.byId(sEndDate).getValueState() !== ValueState.Error) {
 
@@ -460,17 +507,17 @@ sap.ui.define([
                         return "error";
                     });
                 } else {
-                    let appt = oModel.getData().appointments.push({
+                    let appt = {
                         title: sTitle,
                         text: sText,
                         type: sType,
                         startDate: oStartDate,
                         endDate: oEndDate,
                         pacient_ID: pacient_ID
-                    });
+                    };
 
                     await this.post("/app/Programare", appt).then(async (data) => {
-                        oModel.getData().appointments.push({
+                        oModel.getData().push({
                             title: sTitle,
                             text: sText,
                             type: sType,
@@ -487,9 +534,37 @@ sap.ui.define([
                 }
 
                 this.getAppointments();
-
+                this.byId("pacientSelect").setSelectedItem(null)
                 this.byId("modifyDialog").close();
             }
+        },
+
+        handleAppointmentCreate: function () {
+            this._createInitialDialogValues(this.getView().byId("SPC1").getStartDate());
+        },
+
+        handleHeaderDateSelect: function (oEvent) {
+            this._createInitialDialogValues(oEvent.getParameter("date"));
+        },
+
+        _createInitialDialogValues: function (oDate) {
+            var oStartDate = new Date(oDate),
+                oEndDate = new Date(oStartDate);
+
+            oStartDate.setHours(this._getDefaultAppointmentStartHour());
+            oEndDate.setHours(this._getDefaultAppointmentEndHour());
+            this._oChosenDayData = {
+                start: oStartDate,
+                end: oEndDate
+            };
+            this.sPath = null;
+
+            this._arrangeDialogFragment("Create appointment");
+        },
+
+        handleStartDateChange: function (oEvent) {
+            var oStartDate = oEvent.getParameter("date");
+            // this.messageHandler("'startDateChange' event fired.\n\nNew start date is " + oStartDate.toString());
         },
 
         getPacientSelectVisible: function () {
@@ -509,8 +584,10 @@ sap.ui.define([
 
         goToPacient: function (event) {
             let path = event.getSource().getBindingContext().sPath
-            let model = this.getView().getModel().getProperty(path)
-            debugger;
+            let model = this.getView().getModel().getProperty(path);
+            if (model.pacient_ID) {
+                debugger;
+            }
         },
 
         prepareAppointment: function (model) {

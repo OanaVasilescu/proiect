@@ -9,7 +9,7 @@
             <Button text="Delete" press="handlePopoverDeleteButton"/>
         </endButton>
         <f:SimpleForm id="appointmentEditForm" editable="false" layout="ResponsiveGridLayout" singleContainerFullSize="false">
-            <Label text="Additional information" labelFor="moreInfo"/>
+            <Label text="Additional information" labelFor="moreInfo" visible="{= ${text} !== null}"/>
             <Text id="moreInfoText" text="{text}"/>
             <Label text="From" labelFor="startDate"/>
             <Text text="{
@@ -22,9 +22,9 @@
 						formatter:'.formatDate'
 					}"/>
             <CheckBox id="allDayText" text="All-day" selected="{allDay>/allDay}" enabled="false"/>
-            <Label text="Pacient" labelFor="Pacient"/>
-            <Button id="Pacient" text="{pacient/nume} {pacient/prenume}" press="goToPacient"/>
-            <Label text="Type" labelFor="appType"/>
+            <Label text="Pacient" labelFor="Pacient" visible="{= ${pacient_ID} !== null}"/>
+            <Button id="Pacient" visible="{= ${pacient_ID} !== null}" text="{pacient/nume} {pacient/prenume}" press="goToPacient"/>
+            <Label text="Type" labelFor="appType" visible="{= ${type} !== null}"/>
             <Text id="appTypeText" text="{ path: 'type', formatter: '._typeFormatter'}"/>
         </f:SimpleForm>
     </ResponsivePopover>

@@ -12,7 +12,7 @@
                 <ToggleButton text="Drag and Create" id="enableAppointmentsCreate" pressed="{settings>/enableAppointmentsCreate}"/>
             </OverflowToolbar>
         </customHeader>
-        <SinglePlanningCalendar class="sapUiSmallMarginBottom" title= "Calendar" viewChange="handleViewChange" appointmentSelect="handleAppointmentSelect" headerDateSelect="handleHeaderDateSelect" startDateChange="handleStartDateChange" appointmentDrop="handleAppointmentDrop" appointmentResize="handleAppointmentResize" appointmentCreate="handleAppointmentCreateDnD" moreLinkPress="handleMoreLinkPress" startDate="{path: ' /startDate'}" enableAppointmentsDragAndDrop="{settings>/enableAppointmentsDragAndDrop}" enableAppointmentsCreate="{settings>/enableAppointmentsCreate}" stickyMode="All" appointments="{path: '/'}">
+        <SinglePlanningCalendar id="SPC1" class="sapUiSmallMarginBottom" title= "Calendar" viewChange="handleViewChange" appointmentSelect="handleAppointmentSelect" headerDateSelect="handleHeaderDateSelect" startDateChange="handleStartDateChange" appointmentDrop="handleAppointmentDrop" appointmentResize="handleAppointmentResize" appointmentCreate="handleAppointmentCreateDnD" moreLinkPress="handleMoreLinkPress" enableAppointmentsDragAndDrop="{settings>/enableAppointmentsDragAndDrop}" enableAppointmentsCreate="{settings>/enableAppointmentsCreate}" stickyMode="All" appointments="{path: '/'}">
             <actions>
                 <Button id="addNewAppointment" text="Create" press="handleAppointmentCreate" tooltip="Add new appointment" />
                 <Button id="legendButton" icon="sap-icon://legend" press="handleOpenLegend" tooltip="Open SinglePlanningCalendar legend" ariaHasPopup="Dialog" />
