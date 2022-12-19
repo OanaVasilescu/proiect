@@ -4,14 +4,14 @@
     xmlns="sap.m"
     xmlns:unified="sap.ui.unified">
     <Page>
-        <customHeader>
+        <!-- <customHeader>
             <OverflowToolbar height="100%" width="100%">
                 <ToolbarSpacer/>
-                <Label text="Actions: "/>
+                 <Label text="Actions: "/>
                 <ToggleButton text="Drag and Drop" id="enableAppointmentsDragAndDrop" pressed="{settings>/enableAppointmentsDragAndDrop}"/>
-                <ToggleButton text="Drag and Create" id="enableAppointmentsCreate" pressed="{settings>/enableAppointmentsCreate}"/>
+                <ToggleButton text="Drag and Create" id="enableAppointmentsCreate" pressed="{settings>/enableAppointmentsCreate}"/> 
             </OverflowToolbar>
-        </customHeader>
+        </customHeader> -->
         <SinglePlanningCalendar id="SPC1" class="sapUiSmallMarginBottom" title= "Calendar" viewChange="handleViewChange" appointmentSelect="handleAppointmentSelect" headerDateSelect="handleHeaderDateSelect" startDateChange="handleStartDateChange" appointmentDrop="handleAppointmentDrop" appointmentResize="handleAppointmentResize" appointmentCreate="handleAppointmentCreateDnD" moreLinkPress="handleMoreLinkPress" enableAppointmentsDragAndDrop="{settings>/enableAppointmentsDragAndDrop}" enableAppointmentsCreate="{settings>/enableAppointmentsCreate}" stickyMode="All" appointments="{path: '/'}">
             <actions>
                 <Button id="addNewAppointment" text="Create" press="handleAppointmentCreate" tooltip="Add new appointment" />

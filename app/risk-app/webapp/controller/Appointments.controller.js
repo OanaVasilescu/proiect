@@ -616,6 +616,5 @@ sap.ui.define([
                 this.messageHandler("Get pacients error");
             });
         }
-
     });
 });

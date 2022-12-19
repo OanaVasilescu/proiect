@@ -19,6 +19,7 @@ entity Pacient : cuid {
     cnp: String;
     sex: String;
     dataNasterii: String;
+    varsta: Integer;
     domiciliu: String;
     judet: String;
     strada: String;
