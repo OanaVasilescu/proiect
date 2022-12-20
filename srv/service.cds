@@ -6,4 +6,5 @@ service Service @(path : '/app') {
     entity Fisa as projection on my.Fisa;
     entity Boala as projection on my.Boala;
     entity Tratament as projection on my.Tratament;
+    entity Alergie as projection on my.Alergie;
 }

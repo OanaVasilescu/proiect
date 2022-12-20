@@ -108,6 +108,13 @@
           "target": [
             "TargetOverview"
           ]
+        },
+        {
+          "name": "Details",
+          "pattern": "pacient/{id}",
+          "target": [
+            "Details"
+          ]
         }
       ],
       "targets": {
@@ -117,6 +124,13 @@
           "clearControlAggregation": false,
           "viewId": "Overview",
           "viewName": "Overview"
+        },
+        "Details": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "Details",
+          "viewName": "Details"
         }
       }
     },

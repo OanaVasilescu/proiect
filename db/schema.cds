@@ -32,7 +32,10 @@ entity Pacient : cuid {
     grupSangvin: String;
     greutate: String;
     inaltime: String;
-    alergii: array of String;
+    alergii: array of {
+        alergen: String;
+        tip: String
+        };
     ocupatie: String;
     fise: Association to many Fisa on fise.pacient = $self;
 }
@@ -69,4 +72,9 @@ entity Tratament: cuid {
     pastilaSeara: Boolean;
     pastilaZiua: Boolean;
     nrPastileDeodata: Integer;
+}
+
+entity Alergie: cuid {
+    tip: String;
+    alergen: String;
 }

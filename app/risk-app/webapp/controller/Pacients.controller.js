@@ -4,10 +4,10 @@ sap.ui.define([
     "riskapp/utils/URLs",
     "sap/ui/model/Filter",
     "sap/ui/model/FilterOperator",
-    "sap/ui/core/format/DateFormat",
-    "sap/m/ToolbarSpacer",
-    "sap/ui/thirdparty/jquery"
-], function (BaseController, JSONModel, URLs, Filter, FilterOperator, DateFormat, ToolbarSpacer, jQuery) {
+    "sap/ui/table/RowAction",
+    "sap/ui/table/RowActionItem",
+    "sap/ui/table/RowSettings",
+], function (BaseController, JSONModel, URLs, Filter, FilterOperator, RowAction, RowActionItem, RowSettings) {
     "use strict";
 
     return BaseController.extend("riskapp.controller.Pacients", {
@@ -17,10 +17,51 @@ sap.ui.define([
 
             this.getView().setModel(new JSONModel());
             oView.setModel(new JSONModel({globalFilter: "", availabilityFilterOn: false, cellFilterOn: false}), "ui");
+
+
+            var fnPress = this.handleActionPress.bind(this);
+
+            this.modes = [{
+                    key: "Navigation",
+                    text: "Navigation",
+                    handler: function () {
+                        var oTemplate = new RowAction({
+                            items: [new RowActionItem(
+                                    {type: "Navigation", press: fnPress, visible: "{Available}"}
+                                )]
+                        });
+                        return [1, oTemplate];
+                    }
+                }];
+
+            this.getView().setModel(new JSONModel({items: this.modes}), "modes");
+            this.switchState("Navigation");
         },
 
         initPage: async function () {
             await this.getPacients();
+        },
+
+        switchState: function (sKey) {
+            var oTable = this.byId("table");
+            var iCount = 0;
+            var oTemplate = oTable.getRowActionTemplate();
+            if (oTemplate) {
+                oTemplate.destroy();
+                oTemplate = null;
+            }
+
+            for (var i = 0; i < this.modes.length; i++) {
+                if (sKey == this.modes[i].key) {
+                    var aRes = this.modes[i].handler();
+                    iCount = aRes[0];
+                    oTemplate = aRes[1];
+                    break;
+                }
+            }
+
+            oTable.setRowActionTemplate(oTemplate);
+            oTable.setRowActionCount(iCount);
         },
 
         _filter: function () {
@@ -122,6 +163,21 @@ sap.ui.define([
 
         formatAvailableToObjectState: function (bAvailable) {
             return bAvailable ? "Success" : "Error";
+        },
+
+        handleActionPress: function (oEvent) {
+            var oRow = oEvent.getParameter("row");
+            var oItem = oEvent.getParameter("item");
+            // MessageToast.show("Item " + (
+            //     oItem.getText() || oItem.getType()
+            // ) + " pressed for product with id " + this.getView().getModel().getProperty("ProductId", oRow.getBindingContext()));
+
+            this.getRouter().navTo("Details", {
+                id: this.getView().getModel().getProperty("ID", oRow.getBindingContext())
+            });
+        },
+
+        addPacient: function () { // this.getRouter().navTo("Details");
         },
 
         validCNP: function (p_cnp) {
@@ -267,7 +323,7 @@ sap.ui.define([
 
                 let zi = pacient.cnp.substring(5, 7);
 
-                let total = zi + luna + an;
+                let total = zi + " " + luna + " " + an;
 
                 pacient.dataNasterii = total;
 

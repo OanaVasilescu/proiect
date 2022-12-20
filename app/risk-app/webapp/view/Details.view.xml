@@ -1,0 +1,128 @@
+<mvc:View controllerName="riskapp.controller.Details"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:core="sap.ui.core"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m">
+    <Page id="page" enableScrolling="true" showNavButton="true" navButtonPress="navigateBack">
+        <customHeader>
+            <Bar>
+                <contentLeft>
+                    <Button text="Back" press="navigateBack" />
+                </contentLeft>
+                <contentRight>
+                    <Button id="edit" text="Edit" enabled="false" press="handleEditPress" />
+                    <Button id="save" text="Save" type="Emphasized" visible="false" press="handleSavePress" />
+                    <Button id="cancel" text="Cancel" visible="false" press="handleCancelPress" />
+                </contentRight>
+            </Bar>
+        </customHeader>
+        <content>
+            <ObjectHeader title="{pacientModel>/nume} {pacientModel>/prenume}" backgroundDesign="Solid">
+                <attributes>
+                    <ObjectAttribute title="CNP" text="{pacientModel>/cnp}" />
+                </attributes>
+            </ObjectHeader>
+            <f:SimpleForm class="sapUiForceWidthAuto sapUiResponsiveMargin" layout="ColumnLayout" columnsM="2" columnsL="3" columnsXL="5">
+                <f:title>
+                    <core:Title text="Personal Data" />
+                </f:title>
+                <Label text="Name"/>
+                <Text visible="{= !${editModel>/editable}}" text="{pacientModel>/nume} {pacientModel>/prenume}"/>
+                <Input width="230px" visible="{editModel>/editable}" value="{pacientModel>/nume}"/>
+                <Input width="230px" class="sapUiTinyMarginBegin" visible="{editModel>/editable}" value="{pacientModel>/prenume}"/>
+
+                <Label text="CNP"/>
+                <Text visible="{= !${editModel>/editable}}" text="{pacientModel>/cnp}"/>
+                <Input id="cnpInput" width="230px" visible="{editModel>/editable}" value="{pacientModel>/cnp}" liveChange="changeCNP"/>
+
+                <Label text="Date of birth"/>
+                <Text text="{pacientModel>/dataNasterii}"/>
+
+                <Label text="Age"/>
+                <Text text="{pacientModel>/varsta}"/>
+
+                <Label text="Sex"/>
+                <Text text="{pacientModel>/sex}"/>
+
+                <Label text="Blood Group"/>
+                <Text visible="{= !${editModel>/editable}}" text="{pacientModel>/grupSangvin}"/>
+                <!-- <Input visible="{editModel>/editable}" value="{pacientModel>/grupSangvin}"/> -->
+                <Select width="230px" visible="{editModel>/editable}" forceSelection="false" selectedKey="{pacientModel>/grupSangvin}" items="{
+						path: 'infoModel>/grSangvina'
+					}">
+                    <core:Item key="{infoModel>key}" text="{infoModel>text}" />
+                </Select>
+
+                <Label text="County"/>
+                <Text visible="{= !${editModel>/editable}}" text="{pacientModel>/judet}"/>
+                <!-- <Input width="230px" visible="{editModel>/editable}" value="{pacientModel>/judet}" showSuggestion="true" suggestionItems="{infoModel>/judete}">
+                    <suggestionItems>
+                        <core:Item text="{infoModel>}" />
+                    </suggestionItems>
+                </Input> -->
+                <ComboBox width="230px" visible="{editModel>/editable}" value="{pacientModel>/judet}" items="{
+				path: 'infoModel>/judete',
+				sorter: { path: '' }
+			}" change="handleJudetChange">
+
+                    <core:Item text="{infoModel>}" key="{infoModel>}" />
+                </ComboBox>
+
+                <Label text="City"/>
+                <Text visible="{= !${editModel>/editable}}" text="{pacientModel>/domiciliu}"/>
+                <Input width="230px" visible="{editModel>/editable}" value="{pacientModel>/domiciliu}"/>
+
+
+                <Label text="Street"/>
+                <Text visible="{= !${editModel>/editable}}" text="{pacientModel>/strada}"/>
+                <Input width="230px" visible="{editModel>/editable}" value="{pacientModel>/strada}"/>
+
+                <Label text="House Number"/>
+                <Text visible="{= !${editModel>/editable}}" text="{pacientModel>/numar}"/>
+                <Input width="230px" visible="{editModel>/editable}" value="{pacientModel>/numar}"/>
+
+                <Label text="Weight (kg)"/>
+                <Text visible="{= !${editModel>/editable}}" text="{pacientModel>/greutate}"/>
+                <!-- <Input visible="{editModel>/editable}" value="{pacientModel>/greutate}"/> -->
+                <StepInput id="greutate" width="230px" visible="{editModel>/editable}" value="{pacientModel>/greutate}" min="0" max="400" change="greutateChange"></StepInput>
+
+                <Label text="Height (cm)"/>
+                <Text visible="{= !${editModel>/editable}}" text="{pacientModel>/inaltime}"/>
+                <!-- <Input visible="{editModel>/editable}" value="{pacientModel>/inaltime}"/> -->
+                <StepInput id="inaltime" width="230px" visible="{editModel>/editable}" value="{pacientModel>/inaltime}" min="0" max="300" change="inaltimeChange"></StepInput>
+
+                <Label text="Job"/>
+                <Text visible="{= !${editModel>/editable}}" text="{pacientModel>/ocupatie}"/>
+                <Input width="230px" visible="{editModel>/editable}" value="{pacientModel>/ocupatie}" showSuggestion="true" suggestionItems="{infoModel>/jobs}">
+                    <suggestionItems>
+                        <core:Item text="{infoModel>name}" />
+                    </suggestionItems>
+                </Input>
+
+                <Label text="Email"/>
+                <Text visible="{= !${editModel>/editable}}" text="{pacientModel>/email}"/>
+                <Input id="email" width="230px" visible="{editModel>/editable}" value="{pacientModel>/email}" liveChange="changeEmail"/>
+            </f:SimpleForm>
+            <List headerText="Alergies List" backgroundDesign="Translucent" width="auto" class="sapUiResponsiveMargin" items="{
+			path: 'pacientModel>/alergii'
+		}">
+                <headerToolbar>
+                    <Toolbar>
+                        <Title text="Alergies List" />
+                        <ToolbarSpacer/>
+                        <ComboBox placeholder="Search for alergens" id="alergenCB" width="230px" visible="{editModel>/editable}" showSecondaryValues= "true" filterSecondaryValues= "true" items="{
+				path: 'infoModel>/alergeni',
+                sorter: {path :'alergen'}
+			}" change="handleAlergenChange">
+                            <core:ListItem text="{infoModel>alergen}" key="{infoModel>alergen}" additionalText="{infoModel>tip}"/>
+                        </ComboBox>
+                        <Button id="addAlergen" enabled="false" text="Add" icon="sap-icon://add" visible="{editModel>/editable}" press="addAlergen" />
+                    </Toolbar>
+                </headerToolbar>
+                <StandardListItem title="{pacientModel>alergen}" info="Tip alergen: {pacientModel>tip}"/>
+            </List>
+            <Table headerText="Treatment history" width="auto" class="sapUiResponsiveMargin"/>
+            <!-- <Panel headerText="A Panel" width="auto" class="sapUiResponsiveMargin"/> -->
+        </content>
+    </Page>
+</mvc:View>
