@@ -8,7 +8,7 @@ sap.ui.define([
         onInit() {
             this.getRouter().getRoute("Details").attachPatternMatched(this.initDetailPage, this);
             this.getView().setModel(new JSONModel(), "pacientModel");
-            this.getView().setModel(new JSONModel({editable: false}), "editModel");
+            this.getView().setModel(new JSONModel({ editable: false }), "editModel");
 
             this.getView().setModel(new JSONModel({
                 grSangvina: [
@@ -149,6 +149,11 @@ sap.ui.define([
 
         initDetailPage: async function (oEvent) {
             let selectedPacientId = oEvent.getParameters("arguments").arguments.id;
+            let edit = oEvent.getParameters("arguments").arguments.edit;
+
+            if (edit) {
+                this.getView().getModel("editModel").setProperty("/editable", true);
+            }
             await this.getPacient(selectedPacientId);
             await this.getAlergeni();
         },
@@ -202,9 +207,9 @@ sap.ui.define([
             var oView = this.getView();
 
             // Show the appropriate action buttons
-            oView.byId("edit").setVisible(! bEdit);
-            oView.byId("save").setVisible(bEdit);
-            oView.byId("cancel").setVisible(bEdit);
+            // oView.byId("edit").setVisible(!bEdit);
+            // oView.byId("save").setVisible(bEdit);
+            // oView.byId("cancel").setVisible(bEdit);
 
             // Set the right form type
             this._showFormFragment(bEdit ? "Change" : "Display");
@@ -214,7 +219,7 @@ sap.ui.define([
             var pFormFragment = this._formFragments[sFragmentName],
                 oView = this.getView();
 
-            if (! pFormFragment) {
+            if (!pFormFragment) {
                 pFormFragment = Fragment.load({
                     id: oView.getId(),
                     name: "sap.ui.layout.sample.SimpleForm_Column_oneGroup234." + sFragmentName
@@ -234,7 +239,7 @@ sap.ui.define([
             // });
 
             let editable = this.getView().getModel("editModel").getProperty("/editable");
-            this.getView().getModel("editModel").setProperty("/editable", ! editable);
+            this.getView().getModel("editModel").setProperty("/editable", !editable);
         },
 
         greutateChange: function () {
@@ -260,7 +265,7 @@ sap.ui.define([
                 sSelectedKey = oValidatedComboBox.getSelectedKey(),
                 sValue = oValidatedComboBox.getValue();
 
-            if (! sSelectedKey && sValue) {
+            if (!sSelectedKey && sValue) {
                 oValidatedComboBox.setValueState(ValueState.Error);
                 oValidatedComboBox.setValueStateText("Please enter a valid county!");
                 this.byId("save").setEnabled(false);
@@ -273,7 +278,7 @@ sap.ui.define([
         changeCNP: function () {
             let input = this.byId("cnpInput").getValue();
             let response = this.validCNP(input);
-            if (! response) {
+            if (!response) {
                 this.byId("cnpInput").setValueState('Error')
                 this.byId("cnpInput").setValueStateText('The given CNP is not meeting hash requirements.')
 
@@ -375,24 +380,24 @@ sap.ui.define([
             if (year < 1800 || year > 2099) {
                 return false;
             }
-            return(cnp[12] === hashResult);
+            return (cnp[12] === hashResult);
         },
 
         completePacient: function (pacient) {
             if (pacient.cnp) {
                 const firstChar = pacient.cnp[0];
                 switch (firstChar) {
-                    case 1: pacient.sex = M;
+                    case "1": pacient.sex = "M";
                         break;
-                    case 2: pacient.sex = F;
+                    case "2": pacient.sex = "F";
                         break;
-                    case 5: pacient.sex = M;
+                    case "5": pacient.sex = "M";
                         break;
-                    case 6: pacient.sex = F;
+                    case "6": pacient.sex = "F";
                         break;
-                    case 7: pacient.sex = M;
+                    case "7": pacient.sex = "M";
                         break;
-                    case 8: pacient.sex = F;
+                    case "8": pacient.sex = "F";
                         break;
                     default:
                         break;
@@ -464,7 +469,7 @@ sap.ui.define([
             let tip = alg.getSelectedItem().getAdditionalText()
 
             let alergii = this.getView().getModel("pacientModel").getProperty("/alergii");
-            alergii.push({alergen: text, tip: tip})
+            alergii.push({ alergen: text, tip: tip })
             this.getView().getModel("pacientModel").setProperty("/alergii", alergii);
         },
 
@@ -473,7 +478,7 @@ sap.ui.define([
                 sSelectedKey = oValidatedComboBox.getSelectedKey(),
                 sValue = oValidatedComboBox.getValue();
 
-            if (! sSelectedKey && sValue) {
+            if (!sSelectedKey && sValue) {
                 oValidatedComboBox.setValueState(ValueState.Error);
                 oValidatedComboBox.setValueStateText("Please enter an alergen from the list!");
                 this.byId("addAlergen").setEnabled(false);

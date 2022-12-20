@@ -10,9 +10,9 @@
                     <Button text="Back" press="navigateBack" />
                 </contentLeft>
                 <contentRight>
-                    <Button id="edit" text="Edit" enabled="false" press="handleEditPress" />
-                    <Button id="save" text="Save" type="Emphasized" visible="false" press="handleSavePress" />
-                    <Button id="cancel" text="Cancel" visible="false" press="handleCancelPress" />
+                    <Button id="edit" text="Edit" enabled="false" press="handleEditPress" visible="{= !${editModel>/editable}}" />
+                    <Button id="save" text="Save" type="Emphasized" visible="{editModel>/editable}" press="handleSavePress" />
+                    <Button id="cancel" text="Cancel" visible="{editModel>/editable}" press="handleCancelPress" />
                 </contentRight>
             </Bar>
         </customHeader>

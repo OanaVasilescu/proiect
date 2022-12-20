@@ -14,7 +14,7 @@
                 <!-- <ToggleButton icon="sap-icon://grid" tooltip="Enable / Disable Cell Filter Functionality" pressed="{ui>/cellFilterOn}"/> -->
                 <Button icon="sap-icon://clear-filter" tooltip="Clear all filters" press="clearAllFilters"/>
                 <ToolbarSeparator/>
-                <Button icon="sap-icon://add" tooltip="Add pacient" press="addPacient"/>
+                <Button icon="sap-icon://add" tooltip="Add pacient" press="addPacient" ariaHasPopup="Dialog"/>
                 <!-- <SearchField placeholder="Filter" value="{ui>/globalFilter}" search="filterGlobally" width="15rem"/> -->
             </OverflowToolbar>
         </t:extension>
@@ -70,7 +70,11 @@
             <t:Column filterProperty="alergii">
                 <Label text="Alergies" />
                 <t:template>
-                    <Text text="{alergii}" wrapping="false" />
+                    <HBox items="{alergii}">
+                        <items>
+                            <Text text="{alergen}; " wrapping="false" />
+                        </items>
+                    </HBox>
                 </t:template>
             </t:Column>
             <t:Column filterProperty="domiciliu">

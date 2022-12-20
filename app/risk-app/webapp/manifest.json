@@ -111,7 +111,7 @@
         },
         {
           "name": "Details",
-          "pattern": "pacient/{id}",
+          "pattern": "pacient/{id}/:edit:",
           "target": [
             "Details"
           ]
