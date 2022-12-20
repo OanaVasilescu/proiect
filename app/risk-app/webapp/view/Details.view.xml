@@ -119,9 +119,17 @@
                         <Button id="addAlergen" enabled="false" text="Add" icon="sap-icon://add" visible="{editModel>/editable}" press="addAlergen" />
                     </Toolbar>
                 </headerToolbar>
-                <StandardListItem title="{pacientModel>alergen}" info="Tip alergen: {pacientModel>tip}"/>
+                <CustomListItem mode="Delete">
+                    <HBox justifyContent="SpaceBetween" alignContent="Center" alignItems="Center">
+                        <HBox alignContent="Center" alignItems="Center">
+                            <Title text="{pacientModel>alergen}" class="sapUiSmallMarginBegin sapUiSmallMarginTopBottom" />
+                            <Text text="Tip alergen: {pacientModel>tip}" class="sapUiSmallMarginBegin sapUiSmallMarginTopBottom"/>
+                        </HBox>
+                        <Button visible="{editModel>/editable}" icon="sap-icon://decline" class="sapUiSmallMarginEnd" press="removeAlergen"></Button>
+                    </HBox>
+                </CustomListItem>
             </List>
-            <Table headerText="Treatment history" width="auto" class="sapUiResponsiveMargin"/>
+            <!-- <Table headerText="Treatment history" width="auto" class="sapUiResponsiveMargin"/> -->
             <!-- <Panel headerText="A Panel" width="auto" class="sapUiResponsiveMargin"/> -->
         </content>
     </Page>

@@ -469,8 +469,27 @@ sap.ui.define([
             let tip = alg.getSelectedItem().getAdditionalText()
 
             let alergii = this.getView().getModel("pacientModel").getProperty("/alergii");
-            alergii.push({ alergen: text, tip: tip })
-            this.getView().getModel("pacientModel").setProperty("/alergii", alergii);
+
+            let foundAlergen = alergii.find(el => el.alergen == text);
+
+            if (foundAlergen) {
+                this.messageHandler("The pacient is already registered with this alergy")
+            } else {
+                alergii.push({ alergen: text, tip: tip })
+                this.getView().getModel("pacientModel").setProperty("/alergii", alergii);
+            }
+
+            alg.setSelectedItem(null);
+        },
+
+        removeAlergen: function (oEvent) {
+            let alergii = this.getView().getModel("pacientModel").getProperty("/alergii");
+
+            let path = oEvent.getSource().getBindingContext("pacientModel").getPath();
+            let thing = this.getView().getModel("pacientModel").getProperty(path);
+
+            let filtered = alergii.filter(el => el !== thing);
+            this.getView().getModel("pacientModel").setProperty("/alergii", filtered);
         },
 
         handleAlergenChange: function (oEvent) {
