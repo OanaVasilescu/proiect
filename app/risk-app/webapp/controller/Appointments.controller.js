@@ -17,13 +17,13 @@ sap.ui.define([
             this.getView().setModel(new JSONModel());
 
             let oModel = new JSONModel();
-            oModel.setData({enableAppointmentsDragAndDrop: true, enableAppointmentsResize: true, enableAppointmentsCreate: true});
+            oModel.setData({ enableAppointmentsDragAndDrop: true, enableAppointmentsResize: true, enableAppointmentsCreate: true });
             this.getView().setModel(oModel, "settings");
 
             this.getView().setModel(new JSONModel(), "Pacients");
 
             oModel = new JSONModel();
-            oModel.setData({allDay: false});
+            oModel.setData({ allDay: false });
             this.getView().setModel(oModel, "allDay");
 
             let supportedAppointmentItems = [
@@ -49,10 +49,10 @@ sap.ui.define([
             ]
 
             oModel = new JSONModel();
-            oModel.setData({supportedAppointmentItems: supportedAppointmentItems});
+            oModel.setData({ supportedAppointmentItems: supportedAppointmentItems });
             this.getView().setModel(oModel, "supportedAppointmentItems");
 
-            this.getView().setModel(new JSONModel({allDay: false}), "visibilityModel");
+            this.getView().setModel(new JSONModel({ allDay: false }), "visibilityModel");
         },
 
         initPage: async function () {
@@ -70,15 +70,15 @@ sap.ui.define([
                     errorMessage: ""
                 };
 
-            if (! oStartDate) {
+            if (!oStartDate) {
                 oErrorState.errorState = true;
                 oErrorState.errorMessage = "Please pick a date";
                 this._setDateValueState(oDateTimePickerStart, oErrorState);
-            } else if (! oEndDate) {
+            } else if (!oEndDate) {
                 oErrorState.errorState = true;
                 oErrorState.errorMessage = "Please pick a date";
                 this._setDateValueState(oDateTimePickerEnd, oErrorState);
-            } else if (! oEvent.getParameter("valid")) {
+            } else if (!oEvent.getParameter("valid")) {
                 oErrorState.errorState = true;
                 oErrorState.errorMessage = "Invalid date";
                 if (oEvent.getSource() === oDateTimePickerStart) {
@@ -153,8 +153,8 @@ sap.ui.define([
             }
 
             this.messageHandler("Appointment with title \n'" + sAppointmentTitle + "'\n has been " + (
-            bCopy ? "create" : "moved"
-        ));
+                bCopy ? "create" : "moved"
+            ));
         },
 
         handleAppointmentResize: async function (oEvent) {
@@ -202,7 +202,7 @@ sap.ui.define([
                 oView = this.getView();
 
             if (!this._pLegendPopover) {
-                this._pLegendPopover = Fragment.load({id: oView.getId(), name: "riskapp.view.fragments.Legend", controller: this}).then(function (oLegendPopover) {
+                this._pLegendPopover = Fragment.load({ id: oView.getId(), name: "riskapp.view.fragments.Legend", controller: this }).then(function (oLegendPopover) {
                     oView.addDependent(oLegendPopover);
                     return oLegendPopover;
                 });
@@ -241,7 +241,7 @@ sap.ui.define([
             bAllDate = false;
             oModel = this.getView().getModel("allDay");
 
-            if (! oAppointment.getSelected() && this._pDetailsPopover) {
+            if (!oAppointment.getSelected() && this._pDetailsPopover) {
                 this._pDetailsPopover.then(function (oResponsivePopover) {
                     oResponsivePopover.close();
                 });
@@ -259,7 +259,7 @@ sap.ui.define([
             oModel.updateBindings();
 
             if (!this._pDetailsPopover) {
-                this._pDetailsPopover = Fragment.load({id: oView.getId(), name: "riskapp.view.fragments.Details", controller: this}).then(function (oResponsivePopover) {
+                this._pDetailsPopover = Fragment.load({ id: oView.getId(), name: "riskapp.view.fragments.Details", controller: this }).then(function (oResponsivePopover) {
                     oView.addDependent(oResponsivePopover);
                     return oResponsivePopover;
                 });
@@ -299,14 +299,14 @@ sap.ui.define([
                 oOldEndDate = this.byId(sEndDatePickerID).getDateValue(),
                 oNewEndDate = new Date(oOldEndDate);
 
-            if (! bSelected) {
+            if (!bSelected) {
                 oNewStartDate.setHours(this._getDefaultAppointmentStartHour());
                 oNewEndDate.setHours(this._getDefaultAppointmentEndHour());
             } else {
                 this._setHoursToZero(oNewStartDate);
                 this._setHoursToZero(oNewEndDate);
-            } sStartDatePickerID = ! bSelected ? "DTPStartDate" : "DPStartDate";
-            sEndDatePickerID = ! bSelected ? "DTPEndDate" : "DPEndDate";
+            } sStartDatePickerID = !bSelected ? "DTPStartDate" : "DPStartDate";
+            sEndDatePickerID = !bSelected ? "DTPEndDate" : "DPEndDate";
             this.byId(sStartDatePickerID).setDateValue(oNewStartDate);
             this.byId(sEndDatePickerID).setDateValue(oNewEndDate);
         },
@@ -330,9 +330,9 @@ sap.ui.define([
                     iSeconds = oDate.getSeconds();
 
                 if (iHours !== 0 || iMinutes !== 0 || iSeconds !== 0) {
-                    return DateFormat.getDateTimeInstance({style: "medium"}).format(oDate);
+                    return DateFormat.getDateTimeInstance({ style: "medium" }).format(oDate);
                 } else {
-                    return DateFormat.getDateInstance({style: "medium"}).format(oDate);
+                    return DateFormat.getDateInstance({ style: "medium" }).format(oDate);
                 }
             }
         },
@@ -358,7 +358,7 @@ sap.ui.define([
             var oView = this.getView();
 
             if (!this._pNewAppointmentDialog) {
-                this._pNewAppointmentDialog = Fragment.load({id: oView.getId(), name: "riskapp.view.fragments.Modify", controller: this}).then(function (oNewAppointmentDialog) {
+                this._pNewAppointmentDialog = Fragment.load({ id: oView.getId(), name: "riskapp.view.fragments.Modify", controller: this }).then(function (oNewAppointmentDialog) {
                     oView.addDependent(oNewAppointmentDialog);
                     return oNewAppointmentDialog;
                 });
@@ -502,7 +502,7 @@ sap.ui.define([
                     oModel.setProperty(sAppointmentPath + "/pacient_ID", pacient_ID);
 
                     this.prepareAppointment(oModel.getProperty(sAppointmentPath));
-                    await this.put("/app/Programare/" + oModel.getProperty(sAppointmentPath + "/ID"), oModel.getProperty(sAppointmentPath)).then(async (data) => {}).catch((err) => {
+                    await this.put("/app/Programare/" + oModel.getProperty(sAppointmentPath + "/ID"), oModel.getProperty(sAppointmentPath)).then(async (data) => { }).catch((err) => {
                         this.messageHandler("uploadRiskEventError");
                         return "error";
                     });
@@ -586,7 +586,9 @@ sap.ui.define([
             let path = event.getSource().getBindingContext().sPath
             let model = this.getView().getModel().getProperty(path);
             if (model.pacient_ID) {
-                debugger;
+                this.getRouter().navTo("Details", {
+                    id: model.pacient_ID
+                });
             }
         },
 
