@@ -30,8 +30,8 @@ entity Pacient : cuid {
     apartament: String;
     email: String;
     grupSangvin: String;
-    greutate: String;
-    inaltime: String;
+    greutate: Integer;
+    inaltime: Integer;
     alergii: array of {
         alergen: String;
         tip: String
@@ -41,22 +41,13 @@ entity Pacient : cuid {
 }
 
 entity Fisa: cuid {
-    diagnosticTrimitere: String;
-    diagnosticPrincipal: String;
-    cineTrimite: String;
-    boliConcomitente: String;
-    semneSimptomeSubiective: String;
-    antecedenteHeredocolaterale: String;
-    antecedentePersonale: String;
-    planTratament: array of {
-        medicament: String;
-        durataTratament: String;
-        pastilaDimineata: Boolean;
-        pastilaSeara: Boolean;
-        pastilaZiua: Boolean;
-        nrPastileDeodata: Integer;
-        };
+    tipFise: String;
+    analize: many {tip: String; text: String; rezultate: String};
+    drugs: many {text:String; selected: Boolean};
+    boli: many {text:String; selected: Boolean};
+    diagnoze: many {text: String; tratament: many {medicament: String; modAdministrare: String; selected:Boolean}; mentiuni: String};
     pacient: Association to Pacient;
+    data: DateTime;
 }
 
 entity Boala: cuid {

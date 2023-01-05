@@ -1,6 +1,6 @@
 sap.ui.define([
-    "riskapp/controller/BaseController", "sap/ui/model/json/JSONModel", "riskapp/utils/URLs", 'sap/ui/core/library',
-], function (BaseController, JSONModel, URLs, coreLibrary) {
+    "riskapp/controller/BaseController", "sap/ui/model/json/JSONModel", "riskapp/utils/URLs", 'sap/ui/core/library', "sap/ui/core/Fragment",
+], function (BaseController, JSONModel, URLs, coreLibrary, Fragment) {
     "use strict";
 
     var ValueState = coreLibrary.ValueState;
@@ -8,6 +8,7 @@ sap.ui.define([
         onInit() {
             this.getRouter().getRoute("Details").attachPatternMatched(this.initDetailPage, this);
             this.getView().setModel(new JSONModel(), "pacientModel");
+            this.getView().setModel(new JSONModel({ tipFise: null, analize: [], diagnoze: [] }), "fisaModel");
             this.getView().setModel(new JSONModel({ editable: false }), "editModel");
 
             this.getView().setModel(new JSONModel({
@@ -143,7 +144,23 @@ sap.ui.define([
                     "Valcea",
                     "Vaslui",
                     "Vrancea"
-                ]
+                ],
+                tipFise: ["Drugs and medication use", "Family History", "Investigations/Procedures/Medical tests", "Treatment record"],
+                isTypeChosen: false,
+                chosen: "Treatment record",
+                boli: [{ text: "Diabetes", selected: false }, { text: "Hypertension", selected: false }, { text: "Heart disease", selected: false }, { text: "Autoimmune disorders (rheumatoid arthritis, lupus, etc.)", selected: false }, { text: "Kidney disease", selected: false }, { text: "Epilepsy", selected: false }, { text: "Psychiatric disorders", selected: false }, { text: "Hepatitis", selected: false }, { text: "Depression", selected: false }, { text: "Thyroid disease", selected: false }, { text: "Preeclampsia", selected: false }, { text: "Down syndrome", selected: false }, { text: "Any chromosomal abnormality", selected: false }, { text: "Muscular dystrophy", selected: false }, { text: "Neurological disorders", selected: false }, { text: "Cystic fibrosis", selected: false }],
+                drugs: [{ text: "Alcohol", selected: false }, { text: "Nicotine", selected: false }, { text: "Antidepressants ", selected: false }, { text: "Dissociative Anesthetics", selected: false }, { text: "Hallucinogens", selected: false }, { text: "Antipsychotics/Anticonvulsants", selected: false }, { text: "Anabolic Steroids", selected: false }, { text: "Cannabinoids", selected: false }, { text: "Sedative", selected: false }, { text: "Opioids", selected: false }, { text: "Stimulants", selected: false }],
+                analize: [{ text: "Spirometrii", tip: "Explorări funcţionale" }, { text: "Teste de reversibilitate bronșică", tip: "Explorări funcţionale" }, { text: "Testarea difuziunii prin membrana alveolo-capilară", tip: "Explorări funcţionale" }, { text: "Testarea cardio-pulmonară complexă la efort", tip: "Explorări funcţionale" }, { text: "Electrocardiografii", tip: "Explorări funcţionale" }, { text: "EKG", tip: "Explorări funcţionale" }, { text: "Audiometria", tip: "Explorări funcţionale" }, { text: "Glucotest", tip: "Explorări funcţionale" }, { text: "Holter monitorizare tensiune arterială - 24 ore", tip: "Explorări funcţionale" }, { text: "Oscilometrie", tip: "Explorări funcţionale" }, { text: "Colposcopie", tip: "Explorări funcţionale" },
+                { text: "Radiografia dentara", tip: "Investigaţii radiologice" }, { text: "Radiografia organelor ale aparatului respirator si toracelui", tip: "Investigaţii radiologice" }, { text: "Radiografia craniului si a creierului", tip: "Investigaţii radiologice" }, { text: "Radiografia coloanei vertebrale", tip: "Investigaţii radiologice" }, { text: "Mamografia", tip: "Investigaţii radiologice" }, { text: "Alte radiografii cu substante de contrast", tip: "Investigaţii radiologice" },
+                { text: "Îndepartarea de corpuri straine", tip: "Alte proceduri terapeutice" }, { text: "Evacuarea continutului tractului digestiv", tip: "Alte proceduri terapeutice" }, { text: "Evacuarea continutului aparatului excretor", tip: "Alte proceduri terapeutice" }, { text: "Aspiratii terapeutice", tip: "Alte proceduri terapeutice" }, { text: "Evacuare cu siringa, prin insuflare, irigare", tip: "Alte proceduri terapeutice" }, { text: "Spalarea si îngrijirea ranilor: taiate, muscate, întepate", tip: "Alte proceduri terapeutice" }, { text: "Corectarea fracturilor si dislocatiilor", tip: "Alte proceduri terapeutice" }, { text: "Manipularea fetusului sau a uterului cu sarcina", tip: "Alte proceduri terapeutice" }, { text: "Hidroterapia si aeroterapia", tip: "Alte proceduri terapeutice" },
+                { text: "APTT", tip: "Analize de laborator" }, { text: "Crioglobuline", tip: "Analize de laborator" }, { text: "Determinare de grup sanguin ABO", tip: "Analize de laborator" }, { text: "V.S.H.", tip: "Analize de laborator" }, { text: "Acid uric seric", tip: "Analize de laborator" }, { text: "Bilirubina totala", tip: "Analize de laborator" }, { text: "Colesterol seric total", tip: "Analize de laborator" }, { text: "Calciu ionic seric", tip: "Analize de laborator" }, { text: "HDL colesterol", tip: "Analize de laborator" }, { text: "ASLO cantitativ", tip: "Analize de laborator" }, { text: "Proteina  C  reactivă", tip: "Analize de laborator" }, { text: "AFP-Alfafetoproteina", tip: "Analize de laborator" }, { text: "Anticorpi HCV", tip: "Analize de laborator" }, { text: "Antigen Helicobacter Pylori IgG", tip: "Analize de laborator" }, { text: "Depistare rotavirus/adenovirus", tip: "Analize de laborator" }, { text: "Examen  microscopic  colorat", tip: "Analize de laborator" }
+                ],
+                diagnoze: [{ text: "Holera", tratament: [{ medicament: "Azitromicină", modAdministrare: "2/zi", selected: false }, { medicament: "Ciprofloxacina", modAdministrare: "2/zi", selected: false }] },
+                { text: "Febra tifoida", tratament: [{ medicament: "Biseptol", modAdministrare: "2/zi", selected: false }, { medicament: "Ampicilină", modAdministrare: "1/zi", selected: false }, { medicament: "Amoxicilină", modAdministrare: "1/zi", selected: false }] },
+                { text: "Varicela", tratament: [{ medicament: "Ibuprofen", modAdministrare: "2/zi", selected: false }] },
+                { text: "Oreion", tratament: [{ medicament: "Ibuprofen", modAdministrare: "2/zi", selected: false }, { medicament: "Paracetamol", modAdministrare: "2/zi", selected: false }] },
+                { text: "Anemie", tratament: [{ medicament: "Lactiferon", modAdministrare: "1/zi", selected: false }] },
+                { text: "Sindromul Cushing", tratament: [{ medicament: "Ketoconazol", modAdministrare: "2/zi", selected: false }, { medicament: "Metopirona", modAdministrare: "2/zi", selected: false }] },]
             }), "infoModel");
         },
 
@@ -154,6 +171,7 @@ sap.ui.define([
             if (edit) {
                 this.getView().getModel("editModel").setProperty("/editable", true);
             }
+
             await this.getPacient(selectedPacientId);
             await this.getAlergeni();
         },
@@ -463,6 +481,227 @@ sap.ui.define([
             }
         },
 
+        addFisa: function () {
+            let oView = this.getView();
+            if (!this._Popover) {
+                this._Popover = Fragment.load({ id: oView.getId(), name: "riskapp.view.fragments.Fisa", controller: this }).then(function (oLegendPopover) {
+                    oView.addDependent(oLegendPopover);
+                    return oLegendPopover;
+                });
+            }
+
+            this._Popover.then(function (oLegendPopover) {
+                if (oLegendPopover.isOpen()) {
+                    oLegendPopover.close();
+                } else {
+                    oLegendPopover.open();
+                }
+            });
+        },
+
+        addInvestigation: function () {
+            let alg = this.byId("InvestigationCB");
+            if (alg.getSelectedItem()) {
+                let text = alg.getSelectedItem().getText();
+                let tip = alg.getSelectedItem().getAdditionalText()
+
+                let investigatii = this.getView().getModel("fisaModel").getProperty("/analize");
+
+                let foundInvestigatie = investigatii.find(el => el.text == text);
+
+                if (foundInvestigatie) {
+                    this.messageHandler("This investigation is already added.")
+                } else {
+                    investigatii.push({ text: text, tip: tip });
+                    this.getView().getModel("fisaModel").setProperty("/analize", investigatii);
+                }
+
+                alg.setSelectedItem(null);
+            }
+        },
+
+        removeInvestigation: function (oEvent) {
+            let analize = this.getView().getModel("fisaModel").getProperty("/analize");
+
+            let path = oEvent.getSource().getBindingContext("fisaModel").getPath();
+            let thing = this.getView().getModel("fisaModel").getProperty(path);
+
+            let filtered = analize.filter(el => el !== thing);
+            this.getView().getModel("fisaModel").setProperty("/analize", filtered);
+        },
+
+        handleInvestigationChange: function (oEvent) {
+            var oValidatedComboBox = oEvent.getSource(),
+                sSelectedKey = oValidatedComboBox.getSelectedKey(),
+                sValue = oValidatedComboBox.getValue();
+
+            if (!sSelectedKey && sValue) {
+                oValidatedComboBox.setValueState(ValueState.Error);
+                oValidatedComboBox.setValueStateText("Please choose from the list!");
+                this.byId("addInvestigation").setEnabled(false);
+            } else {
+                oValidatedComboBox.setValueState(ValueState.None);
+                this.byId("addInvestigation").setEnabled(true);
+            }
+        },
+
+        addDiagnoze: function () {
+            let alg = this.byId("DiagnosisCB");
+            if (alg.getSelectedItem()) {
+                let text = alg.getSelectedItem().getText();
+                let tip = alg.getSelectedItem().getAdditionalText()
+
+                let all = this.getView().getModel("infoModel").getProperty("/diagnoze").find(el => el.text == text);
+                let investigatii = this.getView().getModel("fisaModel").getProperty("/diagnoze");
+                let foundInvestigatie = investigatii.find(el => el.text == text);
+
+                if (foundInvestigatie) {
+                    this.messageHandler("This diagnosis is already added.")
+                } else {
+                    all.mentiuni = "";
+                    investigatii.push(all);
+                    this.getView().getModel("fisaModel").setProperty("/diagnoze", investigatii);
+                }
+
+                alg.setSelectedItem(null);
+
+            }
+        },
+
+        removeDiagnoze: function (oEvent) {
+            let analize = this.getView().getModel("fisaModel").getProperty("/diagnoze");
+
+            let path = oEvent.getSource().getBindingContext("fisaModel").getPath();
+            let thing = this.getView().getModel("fisaModel").getProperty(path);
+
+            let filtered = analize.filter(el => el !== thing);
+            this.getView().getModel("fisaModel").setProperty("/diagnoze", filtered);
+        },
+
+        handleDiagnozeChange: function (oEvent) {
+            var oValidatedComboBox = oEvent.getSource(),
+                sSelectedKey = oValidatedComboBox.getSelectedKey(),
+                sValue = oValidatedComboBox.getValue();
+
+            if (!sSelectedKey && sValue) {
+                oValidatedComboBox.setValueState(ValueState.Error);
+                oValidatedComboBox.setValueStateText("Please choose from the list!");
+                this.byId("addDiagnoze").setEnabled(false);
+            } else {
+                oValidatedComboBox.setValueState(ValueState.None);
+                this.byId("addDiagnoze").setEnabled(true);
+            }
+        },
+
+
+        handleDialogOkButton: function () {
+            this.getView().getModel("infoModel").setProperty("/isTypeChosen", true);
+            let chosen = this.getView().getModel("infoModel").getProperty("/chosen");
+            this.getView().getModel("fisaModel").setProperty("/tipFise", chosen);
+        },
+
+        handleDialogSaveButton: async function () {
+            let boli = this.getView().getModel("infoModel").getProperty("/boli");
+            let drugs = this.getView().getModel("infoModel").getProperty("/drugs");
+
+            let fisaModel = this.getView().getModel("fisaModel");
+            let fisa = fisaModel.getData();
+
+            let id = this.getView().getModel("pacientModel").getData().ID;
+            fisa.pacient_ID = id;
+            fisa.data = new Date();
+            fisa.boli = boli;
+            fisa.drugs = drugs;
+
+            await this.post("/app/Fisa", fisa).then(async (data) => {
+                // this.getFise();
+                this.getPacient(fisa.pacient_ID);
+            }).catch((err) => {
+                this.messageHandler("Pacient error");
+                return "error";
+            });
+
+            this.clearFisaDialog();
+            this.byId("fisaDialog").close();
+        },
+
+        handleDialogCancelButton: function () {
+            this.clearFisaDialog();
+            this.byId("fisaDialog").close();
+        },
+
+        clearFisaDialog: function () {
+            this.getView().getModel("infoModel").setProperty("/isTypeChosen", false);
+
+            let boli = this.getView().getModel("infoModel").getProperty("/boli");
+            boli.forEach(boala => {
+                boala.selected = false;
+            });
+            this.getView().getModel("infoModel").setProperty("/boli", boli);
+
+            let drugs = this.getView().getModel("infoModel").getProperty("/drugs");
+            drugs.forEach(drug => {
+                drug.selected = false;
+            });
+            this.getView().getModel("infoModel").setProperty("/drugs", drugs);
+
+            this.getView().getModel("fisaModel").setProperty("/analize", []);
+            this.getView().getModel("fisaModel").setProperty("/diagnoze", []);
+            this.getView().getModel("fisaModel").setProperty("/tipFise", "");
+            this.getView().getModel("fisaModel").setProperty("/drugs", []);
+            this.getView().getModel("fisaModel").setProperty("/boli", []);
+
+        },
+
+        pressHistory: function (oEvent) {
+            var oView = this.getView();
+
+            let path = oEvent.getSource().getBindingContext("pacientModel").getPath();
+            let data = this.getView().getModel("pacientModel").getProperty(path);
+            this.getView().getModel("infoModel").setProperty("/isTypeChosen", true);
+            this.getView().getModel("infoModel").setProperty("/chosen", data.tipFise);
+
+
+            this.getView().getModel("fisaModel").setProperty("/analize", data.analize);
+
+            let boli = this.getView().getModel("infoModel").getProperty("/boli");
+            let mapped = boli.map(a => {
+                let found = data.boli.find(el => el.text == a.text)
+                if (found) {
+                    a.selected = found.selected;
+                }
+                return a;
+            })
+            this.getView().getModel("infoModel").setProperty("/boli", mapped);
+
+            this.getView().getModel("fisaModel").setProperty("/diagnoze", data.diagnoze);
+
+            let drugs = this.getView().getModel("infoModel").getProperty("/drugs");
+            mapped = drugs.map(a => {
+                let found = data.drugs.find(el => el.text == a.text)
+                if (found) {
+                    a.selected = found.selected;
+                }
+                return a;
+            })
+            this.getView().getModel("infoModel").setProperty("/drugs", mapped);
+
+            if (!this._Popover) {
+                this._Popover = Fragment.load({ id: oView.getId(), name: "riskapp.view.fragments.Fisa", controller: this }).then(function (oLegendPopover) {
+                    oView.addDependent(oLegendPopover);
+                    return oLegendPopover;
+                });
+            }
+
+            this._Popover.then(function (oLegendPopover) {
+                if (oLegendPopover.isOpen()) {
+                    oLegendPopover.close();
+                } else {
+                    oLegendPopover.open();
+                }
+            });
+        },
+
         addAlergen: function () {
             let alg = this.byId("alergenCB");
             let text = alg.getSelectedItem().getText();
@@ -507,12 +746,22 @@ sap.ui.define([
             }
         },
 
+        getFise: async function () {
+            let id = this.getView().getModel("pacientModel").getData().ID;
+            await this.get("/app/getFiseOfUser(user='" + id + "')").then(async (data) => {
+                this.getPacient(id)
+            }).catch((err) => {
+                console.log(err);
+                this.messageHandler("Get reports error");
+            });
+        },
+
         getAlergeni: async function () {
             await this.get(URLs.getAlergeni()).then(async (data) => {
                 await this.getView().getModel("infoModel").setProperty("/alergeni", data.value);
             }).catch((err) => {
                 console.log(err);
-                this.messageHandler("Get pacients error");
+                this.messageHandler("Get alergens error");
             });
         },
 
@@ -524,7 +773,7 @@ sap.ui.define([
                 this.byId('edit').setEnabled(true);
             }).catch((err) => {
                 console.log(err);
-                this.messageHandler("Get alergens error");
+                this.messageHandler("Get pacient error");
             });
         }
     });

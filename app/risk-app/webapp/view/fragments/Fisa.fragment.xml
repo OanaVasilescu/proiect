@@ -1,0 +1,101 @@
+<core:FragmentDefinition xmlns="sap.m"
+    xmlns:l="sap.ui.layout"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:core="sap.ui.core">
+    <Dialog id="fisaDialog" title="New Pacient Record">
+        <buttons>
+            <Button text="Choose" visible="{= !${infoModel>/isTypeChosen}}" type="Emphasized" press="handleDialogOkButton"/>
+            <Button text="Save" visible="{infoModel>/isTypeChosen}" type="Emphasized" press="handleDialogSaveButton"/>
+            <Button text="Cancel" press="handleDialogCancelButton"/>
+        </buttons>
+        <l:VerticalLayout class="sapUiContentPadding" width="100%">
+            <Select class="sapUiSmallMarginTop" width="100%" visible="{= !${infoModel>/isTypeChosen}}" required="true" selectedKey="{infoModel>/chosen}" items="{
+				path: 'infoModel>/tipFise',
+				sorter: { path: '' }
+			}">
+
+                <core:Item text="{infoModel>}" key="{infoModel>}" />
+            </Select>
+
+            <VBox visible="{= ${infoModel>/isTypeChosen}? (${infoModel>/chosen} === 'Family History') : false}">
+                <Text text="Please check all diseases the pacient's family has had."></Text>
+                <VBox items="{path: 'infoModel>/boli'}">
+                    <CheckBox text="{infoModel>text}" selected="{infoModel>selected}">
+                    </CheckBox>
+                </VBox>
+            </VBox>
+
+            <VBox visible="{= ${infoModel>/isTypeChosen}? (${infoModel>/chosen} === 'Drugs and medication use') : false}">
+                <Text text="Please mark any of the substances used, even if only one time. These refer to the past 12 months."></Text>
+                <VBox items="{path: 'infoModel>/drugs'}">
+                    <CheckBox text="{infoModel>text}" selected="{infoModel>selected}">
+                    </CheckBox>
+                </VBox>
+
+            </VBox>
+
+            <VBox visible="{= ${infoModel>/isTypeChosen}? (${infoModel>/chosen} === 'Investigations/Procedures/Medical tests') : false}">
+                <List headerText="" backgroundDesign="Translucent" width="auto" class="sapUiResponsiveMargin" items="{
+                    path: 'fisaModel>/analize'
+                }">
+                    <headerToolbar>
+                        <Toolbar>
+                            <ComboBox placeholder="Investigations/Procedures/Medical tests" id="InvestigationCB" width="230px" showSecondaryValues= "true" filterSecondaryValues= "true" items="{
+                                    path: 'infoModel>/analize',
+                                    sorter: {path :'text'}
+                                }" change="handleInvestigationChange">
+                                <core:ListItem text="{infoModel>text}" key="{infoModel>text}" additionalText="{infoModel>tip}"/>
+                            </ComboBox>
+                            <Button id="addInvestigation" text="Add" icon="sap-icon://add" press="addInvestigation" />
+                        </Toolbar>
+                    </headerToolbar>
+                    <CustomListItem>
+                        <HBox justifyContent="SpaceBetween" alignContent="Center" alignItems="Center">
+                            <HBox alignContent="Center" alignItems="Center">
+                                <Title text="{fisaModel>text}" class="sapUiSmallMarginBegin sapUiSmallMarginTopBottom" />
+
+                            </HBox>
+                            <Button icon="sap-icon://decline" class="sapUiSmallMarginEnd" press="removeInvestigation"></Button>
+                        </HBox>
+                    </CustomListItem>
+                </List>
+            </VBox>
+
+            <VBox visible="{= ${infoModel>/isTypeChosen}? (${infoModel>/chosen} === 'Treatment record') : false}">
+                <List headerText="" backgroundDesign="Translucent" width="auto" class="sapUiResponsiveMargin" items="{
+                        path: 'fisaModel>/diagnoze'
+                    }">
+                    <headerToolbar>
+                        <Toolbar>
+                            <ComboBox placeholder="Diagnosis" id="DiagnosisCB" width="230px" items="{
+                                    path: 'infoModel>/diagnoze',
+                                    sorter: {path :'text'}
+                                }" change="handleDiagnozeChange">
+                                <core:ListItem text="{infoModel>text}" key="{infoModel>text}"/>
+                            </ComboBox>
+                            <Button id="addDiagnoze" text="Add" icon="sap-icon://add" press="addDiagnoze" />
+                        </Toolbar>
+                    </headerToolbar>
+                    <CustomListItem>
+                        <HBox justifyContent="SpaceBetween" alignContent="Center" alignItems="Center">
+                            <VBox alignContent="Center" alignItems="Center" class="sapUiSmallMarginTopBottom">
+                                <Title text="{fisaModel>text}" class="sapUiSmallMarginBeginEnd" />
+
+                                <Text text="Tratament:"/>
+
+                                <RadioButtonGroup buttons="{path :'fisaModel>tratament', templateShareable:true}">
+                                    <buttons>
+                                        <RadioButton text="{= ${fisaModel>medicament} +', ' + ${fisaModel>modAdministrare}}" selected="{fisaModel>selected}"></RadioButton>
+                                    </buttons>
+                                </RadioButtonGroup>
+
+                                <Input width="100%" value="{fisaModel>mentiuni}" placeholder="Mentiuni" class="sapUiSmallMarginBeginEnd"/>
+                            </VBox>
+                            <Button icon="sap-icon://decline" class="sapUiSmallMarginEnd" press="removeDiagnoze"></Button>
+                        </HBox>
+                    </CustomListItem>
+                </List>
+            </VBox>
+        </l:VerticalLayout>
+    </Dialog>
+</core:FragmentDefinition>
