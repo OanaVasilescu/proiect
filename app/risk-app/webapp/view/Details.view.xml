@@ -132,7 +132,7 @@
 
             <List headerText="Pacient History" backgroundDesign="Translucent" width="auto" class="sapUiResponsiveMargin" items="{
 			path: 'pacientModel>/fise',
-            sorter: { path: 'data' }
+            sorter: { path: 'data' ,  descending : 'true'}
 		}">
                 <headerToolbar>
                     <Toolbar>
@@ -145,7 +145,7 @@
                     <HBox justifyContent="SpaceBetween" alignContent="Center" alignItems="Center">
                         <HBox alignContent="Center" alignItems="Center">
                             <Title text="{pacientModel>tipFise}" class="sapUiSmallMarginBegin sapUiSmallMarginTopBottom" />
-                            <Text text="{path: 'pacientModel>data', type: 'sap.ui.model.type.Date', formatOptions: {pattern: 'd MMM y', source: {pattern: 'yyyy-MM-ddTHH:mm:ssZ'}}}" class="sapUiSmallMarginBegin sapUiSmallMarginTopBottom"/>
+                            <Text text="{path: 'pacientModel>data', type: 'sap.ui.model.type.Date', formatOptions: {pattern: 'd MMM y - hh:mm', source: {pattern: 'yyyy-MM-ddTHH:mm:ssZ'}}}" class="sapUiSmallMarginBegin sapUiSmallMarginTopBottom"/>
                         </HBox>
                     </HBox>
                 </CustomListItem>

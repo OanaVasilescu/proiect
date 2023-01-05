@@ -14,3 +14,7 @@
 .sapUiFormCLSmallColumns .sapUiFormCLElement>.sapUiFormCLCellsS6 {
     width: auto !important;
 }
+
+.sapUiVlt.sapUiContentPadding>.sapuiVltCell:not(:last-child) {
+     padding-bottom: 0rem !important;
+}

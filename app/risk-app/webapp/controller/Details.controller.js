@@ -147,6 +147,7 @@ sap.ui.define([
                 ],
                 tipFise: ["Drugs and medication use", "Family History", "Investigations/Procedures/Medical tests", "Treatment record"],
                 isTypeChosen: false,
+                editableFise: true,
                 chosen: "Treatment record",
                 boli: [{ text: "Diabetes", selected: false }, { text: "Hypertension", selected: false }, { text: "Heart disease", selected: false }, { text: "Autoimmune disorders (rheumatoid arthritis, lupus, etc.)", selected: false }, { text: "Kidney disease", selected: false }, { text: "Epilepsy", selected: false }, { text: "Psychiatric disorders", selected: false }, { text: "Hepatitis", selected: false }, { text: "Depression", selected: false }, { text: "Thyroid disease", selected: false }, { text: "Preeclampsia", selected: false }, { text: "Down syndrome", selected: false }, { text: "Any chromosomal abnormality", selected: false }, { text: "Muscular dystrophy", selected: false }, { text: "Neurological disorders", selected: false }, { text: "Cystic fibrosis", selected: false }],
                 drugs: [{ text: "Alcohol", selected: false }, { text: "Nicotine", selected: false }, { text: "Antidepressants ", selected: false }, { text: "Dissociative Anesthetics", selected: false }, { text: "Hallucinogens", selected: false }, { text: "Antipsychotics/Anticonvulsants", selected: false }, { text: "Anabolic Steroids", selected: false }, { text: "Cannabinoids", selected: false }, { text: "Sedative", selected: false }, { text: "Opioids", selected: false }, { text: "Stimulants", selected: false }],
@@ -481,7 +482,29 @@ sap.ui.define([
             }
         },
 
+        checkSelectFamily: function () {
+            let boli = this.getView().getModel("infoModel").getProperty("/boli");
+            let filtered = boli.filter(el => el.selected);
+            if (filtered.length) {
+                this.getView().byId("saveCeva").setEnabled(true);
+            } else {
+                this.getView().byId("saveCeva").setEnabled(false);
+            }
+        },
+
+        checkSelect: function () {
+            let boli = this.getView().getModel("infoModel").getProperty("/drugs");
+            let filtered = boli.filter(el => el.selected);
+            if (filtered.length) {
+                this.getView().byId("saveCeva").setEnabled(true);
+            } else {
+                this.getView().byId("saveCeva").setEnabled(false);
+            }
+        },
+
         addFisa: function () {
+            this.getView().getModel("infoModel").setProperty("/editableFise", true);
+
             let oView = this.getView();
             if (!this._Popover) {
                 this._Popover = Fragment.load({ id: oView.getId(), name: "riskapp.view.fragments.Fisa", controller: this }).then(function (oLegendPopover) {
@@ -490,11 +513,12 @@ sap.ui.define([
                 });
             }
 
-            this._Popover.then(function (oLegendPopover) {
+            this._Popover.then((oLegendPopover) => {
                 if (oLegendPopover.isOpen()) {
                     oLegendPopover.close();
                 } else {
                     oLegendPopover.open();
+                    this.getView().byId("saveCeva").setEnabled(false);
                 }
             });
         },
@@ -517,6 +541,8 @@ sap.ui.define([
                 }
 
                 alg.setSelectedItem(null);
+                this.getView().byId("saveCeva").setEnabled(true);
+
             }
         },
 
@@ -528,6 +554,9 @@ sap.ui.define([
 
             let filtered = analize.filter(el => el !== thing);
             this.getView().getModel("fisaModel").setProperty("/analize", filtered);
+            if (filtered.length == 0) {
+                this.getView().byId("saveCeva").setEnabled(false);
+            }
         },
 
         handleInvestigationChange: function (oEvent) {
@@ -564,7 +593,7 @@ sap.ui.define([
                 }
 
                 alg.setSelectedItem(null);
-
+                this.getView().byId("saveCeva").setEnabled(true);
             }
         },
 
@@ -576,6 +605,9 @@ sap.ui.define([
 
             let filtered = analize.filter(el => el !== thing);
             this.getView().getModel("fisaModel").setProperty("/diagnoze", filtered);
+            if (filtered.length == 0) {
+                this.getView().byId("saveCeva").setEnabled(false);
+            }
         },
 
         handleDiagnozeChange: function (oEvent) {
@@ -632,6 +664,7 @@ sap.ui.define([
 
         clearFisaDialog: function () {
             this.getView().getModel("infoModel").setProperty("/isTypeChosen", false);
+            this.getView().getModel("infoModel").setProperty("/editableFise", true);
 
             let boli = this.getView().getModel("infoModel").getProperty("/boli");
             boli.forEach(boala => {
@@ -651,10 +684,14 @@ sap.ui.define([
             this.getView().getModel("fisaModel").setProperty("/drugs", []);
             this.getView().getModel("fisaModel").setProperty("/boli", []);
 
+            this.getView().byId("saveCeva").setEnabled(false);
         },
 
         pressHistory: function (oEvent) {
             var oView = this.getView();
+
+            this.getView().getModel("infoModel").setProperty("/editableFise", false);
+
 
             let path = oEvent.getSource().getBindingContext("pacientModel").getPath();
             let data = this.getView().getModel("pacientModel").getProperty(path);
