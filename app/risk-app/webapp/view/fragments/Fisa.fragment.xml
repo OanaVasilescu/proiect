@@ -18,6 +18,7 @@
             </Select>
 
             <VBox visible="{= ${infoModel>/isTypeChosen}? (${infoModel>/chosen} === 'Family History') : false}" class="container">
+                <Title text="Family History"/>
                 <Text text="Please check all diseases the pacient's family has had."></Text>
                 <VBox items="{path: 'infoModel>/boli'}">
                     <CheckBox enabled="{infoModel>/editableFise}" text="{infoModel>text}" selected="{infoModel>selected}" select="checkSelectFamily">
@@ -26,6 +27,7 @@
             </VBox>
 
             <VBox visible="{= ${infoModel>/isTypeChosen}? (${infoModel>/chosen} === 'Drugs and medication use') : false}" class="container">
+                <Title text="Drugs and medication use"/>
                 <Text text="Please mark any of the substances used, even if only one time. These refer to the past 12 months."></Text>
                 <VBox items="{path: 'infoModel>/drugs'}">
                     <CheckBox enabled="{infoModel>/editableFise}" text="{infoModel>text}" selected="{infoModel>selected}" select="checkSelect">
@@ -35,18 +37,33 @@
             </VBox>
 
             <VBox visible="{= ${infoModel>/isTypeChosen}? (${infoModel>/chosen} === 'Investigations/Procedures/Medical tests') : false}" class="container">
-                <List headerText="" backgroundDesign="Translucent" width="auto" class="sapUiResponsiveMargin" items="{
+                <Title text="Investigations/Procedures/Medical tests"/>
+                <List headerText="Investigations/Procedures/Medical tests" backgroundDesign="Translucent" width="auto" class="sapUiResponsiveMargin" items="{
                     path: 'fisaModel>/analize'
                 }">
                     <headerToolbar>
                         <Toolbar>
-                            <ComboBox visible="{infoModel>/editableFise}" placeholder="Investigations/Procedures/Medical tests" id="InvestigationCB" width="230px" showSecondaryValues= "true" filterSecondaryValues= "true" items="{
+                            <!-- <VBox> -->
+                            <!-- <HBox> -->
+                            <ComboBox visible="{infoModel>/editableFise}" placeholder="Investigations/Procedures/Medical tests" id="InvestigationCB" width="100%" showSecondaryValues= "true" filterSecondaryValues= "true" items="{
                                     path: 'infoModel>/analize',
                                     sorter: {path :'text'}
                                 }" change="handleInvestigationChange">
                                 <core:ListItem text="{infoModel>text}" key="{infoModel>text}" additionalText="{infoModel>tip}"/>
                             </ComboBox>
                             <Button visible="{infoModel>/editableFise}" id="addInvestigation" text="Add" icon="sap-icon://add" press="addInvestigation" />
+                            <!-- </HBox>
+                                <HBox> -->
+                            <Select id="tipSelect" class="sapUiSmallMarginBegin" width="100%" visible="{= ${infoModel>/invalidProcedures}}" required="true" items="{
+                                            path: 'infoModel>/tipuriChestii',
+                                            sorter: { path: '' }
+                                        }">
+
+                                <core:Item text="{infoModel>}" key="{infoModel>}" />
+                            </Select>
+                            <Button visible="{infoModel>/invalidProcedures}" icon="sap-icon://add-activity" class="sapUiSmallMarginEnd" press="addNewInvestigation"></Button>
+                            <!-- </HBox> -->
+                            <!-- </VBox> -->
                         </Toolbar>
                     </headerToolbar>
                     <CustomListItem>
@@ -61,6 +78,7 @@
             </VBox>
 
             <VBox visible="{= ${infoModel>/isTypeChosen}? (${infoModel>/chosen} === 'Treatment record') : false}" class="container">
+                <Title text="Treatment record"/>
                 <List headerText="" backgroundDesign="Translucent" width="auto" class="sapUiResponsiveMargin" items="{
                         path: 'fisaModel>/diagnoze'
                     }">

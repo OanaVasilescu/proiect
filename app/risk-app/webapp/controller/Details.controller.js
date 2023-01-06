@@ -148,6 +148,7 @@ sap.ui.define([
                 tipFise: ["Drugs and medication use", "Family History", "Investigations/Procedures/Medical tests", "Treatment record"],
                 isTypeChosen: false,
                 editableFise: true,
+                invalidProcedures: false,
                 chosen: "Treatment record",
                 boli: [{ text: "Diabetes", selected: false }, { text: "Hypertension", selected: false }, { text: "Heart disease", selected: false }, { text: "Autoimmune disorders (rheumatoid arthritis, lupus, etc.)", selected: false }, { text: "Kidney disease", selected: false }, { text: "Epilepsy", selected: false }, { text: "Psychiatric disorders", selected: false }, { text: "Hepatitis", selected: false }, { text: "Depression", selected: false }, { text: "Thyroid disease", selected: false }, { text: "Preeclampsia", selected: false }, { text: "Down syndrome", selected: false }, { text: "Any chromosomal abnormality", selected: false }, { text: "Muscular dystrophy", selected: false }, { text: "Neurological disorders", selected: false }, { text: "Cystic fibrosis", selected: false }],
                 drugs: [{ text: "Alcohol", selected: false }, { text: "Nicotine", selected: false }, { text: "Antidepressants ", selected: false }, { text: "Dissociative Anesthetics", selected: false }, { text: "Hallucinogens", selected: false }, { text: "Antipsychotics/Anticonvulsants", selected: false }, { text: "Anabolic Steroids", selected: false }, { text: "Cannabinoids", selected: false }, { text: "Sedative", selected: false }, { text: "Opioids", selected: false }, { text: "Stimulants", selected: false }],
@@ -156,6 +157,7 @@ sap.ui.define([
                 { text: "Îndepartarea de corpuri straine", tip: "Alte proceduri terapeutice" }, { text: "Evacuarea continutului tractului digestiv", tip: "Alte proceduri terapeutice" }, { text: "Evacuarea continutului aparatului excretor", tip: "Alte proceduri terapeutice" }, { text: "Aspiratii terapeutice", tip: "Alte proceduri terapeutice" }, { text: "Evacuare cu siringa, prin insuflare, irigare", tip: "Alte proceduri terapeutice" }, { text: "Spalarea si îngrijirea ranilor: taiate, muscate, întepate", tip: "Alte proceduri terapeutice" }, { text: "Corectarea fracturilor si dislocatiilor", tip: "Alte proceduri terapeutice" }, { text: "Manipularea fetusului sau a uterului cu sarcina", tip: "Alte proceduri terapeutice" }, { text: "Hidroterapia si aeroterapia", tip: "Alte proceduri terapeutice" },
                 { text: "APTT", tip: "Analize de laborator" }, { text: "Crioglobuline", tip: "Analize de laborator" }, { text: "Determinare de grup sanguin ABO", tip: "Analize de laborator" }, { text: "V.S.H.", tip: "Analize de laborator" }, { text: "Acid uric seric", tip: "Analize de laborator" }, { text: "Bilirubina totala", tip: "Analize de laborator" }, { text: "Colesterol seric total", tip: "Analize de laborator" }, { text: "Calciu ionic seric", tip: "Analize de laborator" }, { text: "HDL colesterol", tip: "Analize de laborator" }, { text: "ASLO cantitativ", tip: "Analize de laborator" }, { text: "Proteina  C  reactivă", tip: "Analize de laborator" }, { text: "AFP-Alfafetoproteina", tip: "Analize de laborator" }, { text: "Anticorpi HCV", tip: "Analize de laborator" }, { text: "Antigen Helicobacter Pylori IgG", tip: "Analize de laborator" }, { text: "Depistare rotavirus/adenovirus", tip: "Analize de laborator" }, { text: "Examen  microscopic  colorat", tip: "Analize de laborator" }
                 ],
+                tipuriChestii: ["Investigaţii radiologice", "Explorări funcţionale", "Alte proceduri terapeutice", "Analize de laborator"],
                 diagnoze: [{ text: "Holera", tratament: [{ medicament: "Azitromicină", modAdministrare: "2/zi", selected: false }, { medicament: "Ciprofloxacina", modAdministrare: "2/zi", selected: false }] },
                 { text: "Febra tifoida", tratament: [{ medicament: "Biseptol", modAdministrare: "2/zi", selected: false }, { medicament: "Ampicilină", modAdministrare: "1/zi", selected: false }, { medicament: "Amoxicilină", modAdministrare: "1/zi", selected: false }] },
                 { text: "Varicela", tratament: [{ medicament: "Ibuprofen", modAdministrare: "2/zi", selected: false }] },
@@ -559,6 +561,29 @@ sap.ui.define([
             }
         },
 
+        addNewInvestigation: function () {
+            let alg = this.byId("InvestigationCB");
+            let cv = this.byId("tipSelect");
+
+            let newText = alg.getValue();
+            let tip = cv.getSelectedItem().getText();
+
+            let analize = this.getView().getModel("infoModel").getProperty("/analize");
+            analize.push({ text: newText, tip: tip });
+
+            this.getView().getModel("infoModel").setProperty("/analize", analize);
+
+            let investigatii = this.getView().getModel("fisaModel").getProperty("/analize");
+
+            investigatii.push({ text: newText, tip: tip });
+            this.getView().getModel("fisaModel").setProperty("/analize", investigatii);
+
+            alg.setValueState("None");
+            alg.setValue("");
+
+            this.getView().getModel("infoModel").setProperty("/invalidProcedures", false);
+        },
+
         handleInvestigationChange: function (oEvent) {
             var oValidatedComboBox = oEvent.getSource(),
                 sSelectedKey = oValidatedComboBox.getSelectedKey(),
@@ -568,9 +593,12 @@ sap.ui.define([
                 oValidatedComboBox.setValueState(ValueState.Error);
                 oValidatedComboBox.setValueStateText("Please choose from the list!");
                 this.byId("addInvestigation").setEnabled(false);
+
+                this.getView().getModel("infoModel").setProperty("/invalidProcedures", true);
             } else {
                 oValidatedComboBox.setValueState(ValueState.None);
                 this.byId("addInvestigation").setEnabled(true);
+                this.getView().getModel("infoModel").setProperty("/invalidProcedures", false);
             }
         },
 
@@ -665,6 +693,8 @@ sap.ui.define([
         clearFisaDialog: function () {
             this.getView().getModel("infoModel").setProperty("/isTypeChosen", false);
             this.getView().getModel("infoModel").setProperty("/editableFise", true);
+            this.getView().getModel("infoModel").setProperty("/invalidProcedures", false);
+
 
             let boli = this.getView().getModel("infoModel").getProperty("/boli");
             boli.forEach(boala => {
@@ -685,6 +715,7 @@ sap.ui.define([
             this.getView().getModel("fisaModel").setProperty("/boli", []);
 
             this.getView().byId("saveCeva").setEnabled(false);
+
         },
 
         pressHistory: function (oEvent) {
